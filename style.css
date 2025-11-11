@@ -87,20 +87,36 @@ button:hover {
   }
 }
 
-/* Gallery flex container */
+/* Gallery grid: 1 / 2 / 3 columns (restores original 3x3 layout at wide sizes) */
 .gallery {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 20px;
   padding: 20px;
-  justify-content: center;
+  grid-template-columns: 1fr; /* mobile: single column */
+  justify-items: center;
 }
 
-/* Gallery items */
+/* Two columns on medium screens */
+@media (min-width: 600px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Three columns on wider screens (original 3-column grid) */
+@media (min-width: 1000px) {
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Gallery items: sized to fit nicely in the grid */
 .gallery-item {
-  flex: 1 1 100%;  /* full width by default */
-  min-width: 280px;
-  max-width: 500px;
+  /* Use full width of grid cell and limit max width so 3 columns look balanced */
+  width: 100%;
+  max-width: 360px;
+
+  /* ...existing visual styles kept or overridden as needed... */
   background: white;
   padding: 10px;
   border-radius: 8px;
@@ -108,13 +124,10 @@ button:hover {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-}
 
-/* Three columns on wider screens */
-@media (min-width: 1000px) {
-  .gallery-item {
-    flex: 0 1 31%;
-  }
+  /* Keep the hover/scale transition on the entire card */
+  transition: transform 240ms cubic-bezier(.2,.8,.2,1), box-shadow 240ms ease;
+  will-change: transform;
 }
 
 .gallery-item img {
@@ -122,6 +135,16 @@ button:hover {
   height: 200px;
   object-fit: cover;
   border-radius: 4px;
+
+  /* keep subtle transition for image shadow only */
+  transition: box-shadow 240ms ease;
+}
+
+/* Scale the whole card (image + title + snippet) on hover or keyboard focus */
+.gallery-item:hover,
+.gallery-item:focus-within {
+  transform: scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.16);
 }
 
 .gallery-item p {
@@ -132,13 +155,156 @@ button:hover {
 
 /* Placeholder content */
 .placeholder {
-  flex: 1 1 100%;
+  grid-column: 1 / -1; /* span all grid columns so it can center within the gallery */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+  align-items: center;     /* horizontal centering */
   text-align: center;
   padding: 40px;
   color: #666;
+  min-height: 180px;       /* ensure visible centered area */
 }
 
 .placeholder-icon {
   font-size: 48px;
   margin-bottom: 20px;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none; /* hidden by default */
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.open {
+  display: flex;
+}
+
+/* Semi-transparent overlay */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* Modal panel */
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 10px;
+  padding: 18px;
+  width: 95%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  z-index: 2100;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Modal inner layout */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Large media */
+.modal-body img,
+.modal-body iframe {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* Title/date/explanation */
+.modal-body .modal-title {
+  font-weight: bold;
+  font-size: 20px;
+  color: #212121;
+}
+.modal-body .modal-date {
+  color: #666;
+  font-size: 14px;
+}
+.modal-body .modal-explain {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+}
+
+/* Did You Know: compact layout with small left-aligned logo */
+.did-you-know {
+  display: flex;
+  align-items: center;
+  gap: 10px;              /* tight gap so logo sits next to text */
+  margin: 0 20px 16px;
+  padding: 8px 12px;      /* compact padding */
+  background: linear-gradient(180deg, #fffefc, #f7fbff);
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  color: #333;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* Make the large logo WAY smaller and keep it fixed to the left of the text */
+.did-you-know .did-logo {
+  width: 40px;            /* small icon size */
+  height: 40px;
+  flex: 0 0 40px;         /* fixed box so text starts immediately to the right */
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+/* Keep the text compact and vertically stacked */
+.did-you-know .did-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Small label and fact text */
+.did-you-know strong {
+  color: #0b3d91;
+  font-size: 13px;
+  line-height: 1;
+}
+.did-you-know p {
+  margin: 0;
+  font-size: 14px;
+  color: #444;
+}
+
+/* On very narrow screens allow slight scaling but keep the logo left when possible */
+@media (max-width: 420px) {
+  .did-you-know {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .did-you-know .did-logo {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
 }

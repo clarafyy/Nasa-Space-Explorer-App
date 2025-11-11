@@ -14,13 +14,37 @@
     </header>
 
     <div class="filters">
+      <label for="startDate" style="display:none;">Start date</label>
+      <input id="startDate" type="date" placeholder="Start date" />
+      <label for="endDate" style="display:none;">End date</label>
+      <input id="endDate" type="date" placeholder="End date" />
       <button id="getImageBtn">Fetch Space Images</button>
     </div>
+
+    <!-- Did You Know: random space fact (added) -->
+    <section id="didYouKnow" class="did-you-know" aria-live="polite">
+      <img src="img/NASA-Logo-Large.jpg" alt="NASA large logo" class="did-logo" />
+      <div class="did-content">
+        <strong>Did you know?</strong>
+        <p id="didYouKnowText">Loading a fun space fact…</p>
+      </div>
+    </section>
 
     <div id="gallery" class="gallery">
       <div class="placeholder">
         <div class="placeholder-icon">🔭</div>
         <p>Click "Fetch Space Images" to explore the cosmos!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal (hidden by default) -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div id="modalOverlay" class="modal-overlay" data-close></div>
+    <div class="modal-content" role="document">
+      <button id="modalClose" class="modal-close" aria-label="Close">×</button>
+      <div id="modalBody" class="modal-body">
+        <!-- Injected: large image/iframe, title, date, explanation -->
       </div>
     </div>
   </div>
